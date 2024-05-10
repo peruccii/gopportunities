@@ -1,6 +1,10 @@
 package config
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+)
 
 var ( // config variable "global"
 	db *gorm.DB
@@ -8,7 +12,20 @@ var ( // config variable "global"
 )
 
 func Init() error {
+	var err error
+
+	// Initialize sqlserver
+	db, err = InitializeMysql()
+
+	if err != nil {
+		return fmt.Errorf("err initializing sqlserver: %v", err)
+	}
+
 	return nil
+}
+
+func GetSqlServer() *gorm.DB {
+	return db
 }
 
 func GetLogger(p string) *Logger {
