@@ -1,36 +1,26 @@
 package config
 
 import (
+	"fmt"
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/peruccii/gopportunities/entity"
-	"gorm.io/driver/sqlserver"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+		_ "github.com/joho/godotenv/autoload"
 )
 
 func InitializeMysql() (*gorm.DB, error){
-	logger := GetLogger("MYSQL")
-	db_path := "./db/main.db"
-	// Check if the database file exists
-
-	_, err := os.Stat(db_path)
-
-	if os.IsNotExist(err) {
-		logger.Info("DATABASE FILE NOT FOUND, CREATING....")
-		// Create the database file and directory
-
-		err = os.MkdirAll("./db", os.ModeAppend)
-		if err != nil {
-			return nil, err
-		}
-		file, err := os.Create(db_path)
-		if err != nil {
-			return nil, err
-		}
-		file.Close()
+	err := godotenv.Load()
+	if err != nil {
+			fmt.Printf("Error loading .env file %v", err)
 	}
+	logger := GetLogger("MYSQL")
 
-	db, err := gorm.Open(sqlserver.Open(db_path), &gorm.Config{})
+	url := os.Getenv("DATABASE_URL")
+
+	db, err := gorm.Open(mysql.Open(url), &gorm.Config{})
 
 	if err != nil {
 		logger.ErrF("Failed to open database %v", err)
