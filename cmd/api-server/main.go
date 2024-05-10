@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/peruccii/gopportunities/config"
 	"github.com/peruccii/gopportunities/router"
+	
 )
 
 var (
